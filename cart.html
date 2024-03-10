@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h2 {
+      color: #333;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .like-button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.2em;
+      outline: none;
+    }
+
+    .like-button.active {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Shopping Cart</h2>
+
+  <ul id="cart">
+    <!-- Preselected items will be dynamically added here -->
+    <li data-name="Item 1" data-price="20" data-quantity="2">
+      Item 1 - $20 x 2
+      <button onclick="adjustQuantity(this, 'increase')">+</button>
+      <button onclick="adjustQuantity(this, 'decrease')">-</button>
+      <button class="like-button" onclick="toggleLike(this)">♥</button>
+      <button onclick="removeFromCart(this)">Remove</button>
+    </li>
+    <li data-name="Item 2" data-price="30" data-quantity="1">
+      Item 2 - $30 x 1
+      <button onclick="adjustQuantity(this, 'increase')">+</button>
+      <button onclick="adjustQuantity(this, 'decrease')">-</button>
+      <button class="like-button active" onclick="toggleLike(this)">♥</button>
+      <button onclick="removeFromCart(this)">Remove</button>
+    </li>
+  </ul>
+
+  <p>Total Price: $<span id="total-price">70</span></p>
+
+  <script>
+    // JavaScript to handle quantity adjustment, item removal, and liking
+    const totalPriceElement = document.getElementById('total-price');
+
+    function adjustQuantity(button, action) {
+      const cartItem = button.parentNode;
+      const quantityElement = cartItem.dataset.quantityElement;
+      let quantity = parseInt(cartItem.dataset.quantity);
+
+      if (action === 'increase') {
+        quantity++;
+      } else if (action === 'decrease' && quantity > 1) {
+        quantity--;
+      }
+
+      cartItem.dataset.quantity = quantity;
+      quantityElement.textContent = `$${cartItem.dataset.price * quantity}`;
+      updateTotalPrice();
+    }
+
+    function removeFromCart(button) {
+      const cartItem = button.parentNode;
+      const cart = document.getElementById('cart');
+      cart.removeChild(cartItem);
+      updateTotalPrice();
+    }
+
+    function toggleLike(button) {
+      button.classList.toggle('active');
+    }
+
+    function updateTotalPrice() {
+      const cartItems = document.querySelectorAll('#cart li');
+      let totalPrice = 0;
+
+      cartItems.forEach(item => {
+        const quantity = parseInt(item.dataset.quantity);
+        const price = parseFloat(item.dataset.price);
+        totalPrice += quantity * price;
+      });
+
+      totalPriceElement.textContent = totalPrice.toFixed(2);
+    }
+  </script>
+
+</body>
+</html>
